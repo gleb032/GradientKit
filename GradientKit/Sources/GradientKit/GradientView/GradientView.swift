@@ -11,23 +11,37 @@ open class GradientView: UIView {
     private let colors: [UIColor]
     private let startPoint: CGPoint
     private let endPoint: CGPoint
+    private let locations: [NSNumber]?
 
     private var isInitial: Bool
 
     private let gradientLayer = CAGradientLayer()
 
-    public init(colors: [UIColor], startPoint: CGPoint, endPoint: CGPoint, isInitial: Bool = true) {
+    public init(
+        colors: [UIColor],
+        startPoint: CGPoint,
+        endPoint: CGPoint,
+        locations: [NSNumber]? = nil,
+        isInitial: Bool = true
+    ) {
         self.colors = colors
         self.startPoint = startPoint
         self.endPoint = endPoint
+        self.locations = locations
         self.isInitial = isInitial
         super.init(frame: .zero)
     }
 
-    public convenience init(colors: [UIColor], direction: GradientDirection, isInitial: Bool = true) {
+    public convenience init(
+        colors: [UIColor],
+        direction: GradientDirection,
+        locations: [NSNumber]? = nil,
+        isInitial: Bool = true
+    ) {
         self.init(
             colors: colors,
             startPoint: direction.startPoint, endPoint: direction.endPoint,
+            locations: locations,
             isInitial: isInitial
         )
     }
@@ -43,6 +57,7 @@ open class GradientView: UIView {
             gradientLayer.colors = colors.map { $0.cgColor }
             gradientLayer.startPoint = startPoint
             gradientLayer.endPoint = endPoint
+            gradientLayer.locations = locations
 
             layer.addSublayer(gradientLayer)
         } else {

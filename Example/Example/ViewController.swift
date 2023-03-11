@@ -12,8 +12,7 @@ class ViewController: UIViewController {
     private let gradientView: GradientView = {
         let view = GradientView(
             colors: [.purple, .brown, .cyan],
-            direction: .down,
-            isInitial: false
+            direction: .down
         )
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
