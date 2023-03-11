@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  GradientDirection.swift
 //  
 //
 //  Created by Gleb Fandeev on 11.03.2023.

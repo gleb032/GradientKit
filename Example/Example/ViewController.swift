@@ -40,10 +40,12 @@ class ViewController: UIViewController {
 
     @objc private func dissmisAction() {
         gradientView.dissmisGradient()
+        print(gradientView.state)
     }
     
     @objc private func returnAction() {
         gradientView.applyGradient()
+        print(gradientView.state)
     }
 
     override func viewDidLoad() {

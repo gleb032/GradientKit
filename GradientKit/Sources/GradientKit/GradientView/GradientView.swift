@@ -13,7 +13,8 @@ open class GradientView: UIView {
     private let endPoint: CGPoint
     private let locations: [NSNumber]?
 
-    private var isInitial: Bool
+    private(set) public var state: GradientState
+    private var initialState: GradientState
 
     private let gradientLayer = CAGradientLayer()
 
@@ -22,13 +23,14 @@ open class GradientView: UIView {
         startPoint: CGPoint,
         endPoint: CGPoint,
         locations: [NSNumber]? = nil,
-        isInitial: Bool = true
+        initialState: GradientState = .gradient
     ) {
         self.colors = colors
         self.startPoint = startPoint
         self.endPoint = endPoint
         self.locations = locations
-        self.isInitial = isInitial
+        self.state = initialState
+        self.initialState = initialState
         super.init(frame: .zero)
     }
 
@@ -36,13 +38,13 @@ open class GradientView: UIView {
         colors: [UIColor],
         direction: GradientDirection,
         locations: [NSNumber]? = nil,
-        isInitial: Bool = true
+        initialState: GradientState = .gradient
     ) {
         self.init(
             colors: colors,
             startPoint: direction.startPoint, endPoint: direction.endPoint,
             locations: locations,
-            isInitial: isInitial
+            initialState: initialState
         )
     }
 
@@ -52,7 +54,7 @@ open class GradientView: UIView {
     }
 
     public override func draw(_ rect: CGRect) {
-        if isInitial {
+        if initialState == .gradient {
             gradientLayer.frame = bounds
             gradientLayer.colors = colors.map { $0.cgColor }
             gradientLayer.startPoint = startPoint
@@ -62,17 +64,20 @@ open class GradientView: UIView {
             layer.addSublayer(gradientLayer)
         } else {
             super.draw(rect)
-            isInitial = true
+            /// After that, the first branch of the condition will be executed all the time
+            initialState = .gradient
         }
     }
 
     public func dissmisGradient() {
         layer.sublayers?.removeAll {
-            $0 is CAGradientLayer
+            $0 == gradientLayer
         }
+        state = .blank
     }
     
     public func applyGradient() {
         draw(bounds)
+        state = .gradient
     }
 }
