@@ -12,14 +12,14 @@ class ViewController: UIViewController {
     private let gradientView: GradientView = {
         let view = GradientView(
             colors: [.purple, .brown, .cyan],
-            startPoint: .init(x: 0, y: 0),
-            endPoint: .init(x: 1, y: 1)
+            direction: .down,
+            isInitial: false
         )
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    private let dissmisButton: UIButton = {
+    private lazy var dissmisButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(dissmisAction), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -29,7 +29,7 @@ class ViewController: UIViewController {
         return button
     }()
     
-    private let returnButton: UIButton = {
+    private lazy var returnButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(returnAction), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
