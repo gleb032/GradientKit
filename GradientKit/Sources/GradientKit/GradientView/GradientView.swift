@@ -13,10 +13,18 @@ open class GradientView: UIView {
     private let endPoint: CGPoint
     private let locations: [NSNumber]?
 
-    private(set) public var state: GradientState
-    private var initialState: GradientState
+    private lazy var gradientLayer = CAGradientLayer()
 
-    private let gradientLayer = CAGradientLayer()
+    private(set) public var state: GradientState {
+        didSet {
+            switch state {
+            case .gradient:
+                layer.addSublayer(gradientLayer)
+            case .blank:
+                self.gradientLayer.removeFromSuperlayer()
+            }
+        }
+    }
 
     public init(
         colors: [UIColor],
@@ -30,8 +38,9 @@ open class GradientView: UIView {
         self.endPoint = endPoint
         self.locations = locations
         self.state = initialState
-        self.initialState = initialState
         super.init(frame: .zero)
+
+        setAndNotifyState(initialState)
     }
 
     public convenience init(
@@ -53,31 +62,33 @@ open class GradientView: UIView {
         return nil
     }
 
-    public override func draw(_ rect: CGRect) {
-        if initialState == .gradient {
+    override open func layoutSubviews() {
+        super.layoutSubviews()
+        updateGradient()
+    }
+
+    public func dissmisGradient() {
+        setAndNotifyState(.blank)
+    }
+    
+    public func applyGradient() {
+        setAndNotifyState(.gradient)
+        updateGradient()
+    }
+}
+
+private extension GradientView {
+    func updateGradient() {
+        if state == .gradient {
             gradientLayer.frame = bounds
             gradientLayer.colors = colors.map { $0.cgColor }
             gradientLayer.startPoint = startPoint
             gradientLayer.endPoint = endPoint
             gradientLayer.locations = locations
-
-            layer.addSublayer(gradientLayer)
-        } else {
-            super.draw(rect)
-            /// After that, the first branch of the condition will be executed all the time
-            initialState = .gradient
         }
     }
 
-    public func dissmisGradient() {
-        layer.sublayers?.removeAll {
-            $0 == gradientLayer
-        }
-        state = .blank
-    }
-    
-    public func applyGradient() {
-        draw(bounds)
-        state = .gradient
+    func setAndNotifyState(_ newState: GradientState) {
+        state = newState
     }
 }
