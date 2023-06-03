@@ -7,11 +7,12 @@
 
 import Foundation
 
-public enum GradientDirection {
+public indirect enum GradientDirection {
     case left
     case right
     case up
     case down
+    case diagonal(from: GradientDirection, to: GradientDirection)
 
     var startPoint: CGPoint {
         switch self {
@@ -23,6 +24,49 @@ public enum GradientDirection {
             return .init(x: 0.5, y: 1.0)
         case .down:
             return .init(x: 0.5, y: 0.0)
+
+        case let .diagonal(from: .left, to: to):
+            switch to {
+            case .up:
+                return .init(x: 0.0, y: 1.0)
+            case .down:
+                return .init(x: 0.0, y: 0.0)
+            default:
+                return defaultStartPoint
+            }
+
+        case let .diagonal(from: .right, to: to):
+            switch to {
+            case .up:
+                return .init(x: 1.0, y: 1.0)
+            case .down:
+                return .init(x: 1.0, y: 0.0)
+            default:
+                return defaultStartPoint
+            }
+
+        case let .diagonal(from: .up, to: to):
+            switch to {
+            case .left:
+                return .init(x: 1.0, y: 0.0)
+            case .right:
+                return .init(x: 0.0, y: 0.0)
+            default:
+                return defaultStartPoint
+            }
+
+        case let .diagonal(from: .down, to: to):
+            switch to {
+            case .left:
+                return .init(x: 1.0, y: 1.0)
+            case .right:
+                return .init(x: 0.0, y: 1.0)
+            default:
+                return defaultStartPoint
+            }
+            
+        default:
+            return defaultStartPoint
         }
     }
 
@@ -36,6 +80,60 @@ public enum GradientDirection {
             return .init(x: 0.5, y: 0.0)
         case .down:
             return .init(x: 0.5, y: 1.0)
+            
+        case let .diagonal(from: .left, to: to):
+            switch to {
+            case .up:
+                return .init(x: 1.0, y: 0.0)
+            case .down:
+                return .init(x: 1.0, y: 1.0)
+            default:
+                return defaultEndPoint
+            }
+            
+        case let .diagonal(from: .right, to: to):
+            switch to {
+            case .up:
+                return .init(x: 0.0, y: 0.0)
+            case .down:
+                return .init(x: 0.0, y: 1.0)
+            default:
+                return defaultEndPoint
+            }
+            
+        case let .diagonal(from: .up, to: to):
+            switch to {
+            case .left:
+                return .init(x: 0.0, y: 1.0)
+            case .right:
+                return .init(x: 1.0, y: 1.0)
+            default:
+                return defaultEndPoint
+            }
+            
+        case let .diagonal(from: .down, to: to):
+            switch to {
+            case .left:
+                return .init(x: 0.0, y: 0.0)
+            case .right:
+                return .init(x: 1.0, y: 0.0)
+            default:
+                return defaultEndPoint
+            }
+            
+        default:
+            return defaultEndPoint
         }
+    }
+}
+
+private extension GradientDirection {
+
+    var defaultStartPoint: CGPoint {
+        .init(x: 0.0, y: 1.0)
+    }
+
+    var defaultEndPoint: CGPoint {
+        .init(x: 1.0, y: 0.0)
     }
 }

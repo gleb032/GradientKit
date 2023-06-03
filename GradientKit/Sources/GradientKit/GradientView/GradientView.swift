@@ -51,7 +51,8 @@ open class GradientView: UIView {
     ) {
         self.init(
             colors: colors,
-            startPoint: direction.startPoint, endPoint: direction.endPoint,
+            startPoint: direction.startPoint,
+            endPoint: direction.endPoint,
             locations: locations,
             initialState: initialState
         )
