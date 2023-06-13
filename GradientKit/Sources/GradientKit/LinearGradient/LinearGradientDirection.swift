@@ -1,5 +1,5 @@
 //
-//  GradientDirection.swift
+//  LinearGradientDirection.swift
 //  
 //
 //  Created by Gleb Fandeev on 11.03.2023.
@@ -7,12 +7,12 @@
 
 import Foundation
 
-public indirect enum GradientDirection {
+public indirect enum LinearGradientDirection {
     case left
     case right
     case up
     case down
-    case diagonal(from: GradientDirection, to: GradientDirection)
+    case diagonal(from: LinearGradientDirection, to: LinearGradientDirection)
 
     var startPoint: CGPoint {
         switch self {
@@ -127,7 +127,7 @@ public indirect enum GradientDirection {
     }
 }
 
-private extension GradientDirection {
+private extension LinearGradientDirection {
 
     var defaultStartPoint: CGPoint {
         .init(x: 0.0, y: 1.0)

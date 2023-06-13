@@ -1,5 +1,5 @@
 //
-//  GradientView.swift
+//  LinearGradientView.swift
 //  
 //
 //  Created by Gleb Fandeev on 27.02.2023.
@@ -7,7 +7,8 @@
 
 import UIKit
 
-open class GradientView: UIView {
+// TODO: reformat API
+open class LinearGradientView: UIView {
     private let colors: [UIColor]
     private let startPoint: CGPoint
     private let endPoint: CGPoint
@@ -45,7 +46,7 @@ open class GradientView: UIView {
 
     public convenience init(
         colors: [UIColor],
-        direction: GradientDirection,
+        direction: LinearGradientDirection,
         locations: [NSNumber]? = nil,
         initialState: GradientState = .gradient
     ) {
@@ -78,7 +79,7 @@ open class GradientView: UIView {
     }
 }
 
-private extension GradientView {
+private extension LinearGradientView {
     func updateGradient() {
         if state == .gradient {
             gradientLayer.frame = bounds

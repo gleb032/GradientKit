@@ -9,16 +9,34 @@ import UIKit
 import GradientKit
 
 class ViewController: UIViewController {
-    private let gradientView: GradientView = {
+    private let linearGradientView: LinearGradientView = {
         let colors: [UIColor] = [.purple, .orange, .red]
-        let view = GradientView(
+        let view = LinearGradientView(
             colors: colors,
             direction: .diagonal(from: .left, to: .up),
-            locations: [0.2, 0.6, 1.0]
+            locations: [0.2, 0.6, 1.0],
+            initialState: .gradient
         )
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+
+    // TODO: refactor
+    private lazy var width = view.bounds.size.width
+    private lazy var c1 = CGPoint(x: width / 2, y: width / 2)
+    private lazy var c2 = CGPoint(x: width / 4, y: width * 3 / 5)
+    private lazy var c3 = CGPoint(x: width, y: 0)
+    private lazy var c4 = CGPoint(x: width - width / 4, y: width - width * 3 / 5)
+    private lazy var points = [
+        Point(coordinate: c1, color: ARGB(alpha: 255, red: 255, green: 0, blue: 0)),
+        Point(coordinate: c2, color: ARGB(alpha: 255, red: 0, green: 0, blue: 255)),
+        Point(coordinate: c3, color: ARGB(alpha: 255, red: 255, green: 0, blue: 0)),
+        Point(coordinate: c4, color: ARGB(alpha: 255, red: 0, green: 255, blue: 0))
+    ]
+
+    private lazy var bubbleGradientView = BubbleGradientView(
+        frame: view.frame,
+        points: points
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,22 +44,21 @@ class ViewController: UIViewController {
         view.addGestureRecognizer(
             UITapGestureRecognizer(target: self, action:  #selector(clickAction(sender:)))
         )
-
-        view.addSubview(gradientView)
-        NSLayoutConstraint.activate([
-            gradientView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            gradientView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            gradientView.topAnchor.constraint(equalTo: view.topAnchor),
-            gradientView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
     }
 
+    private var isLinearGradient = false
+
     @objc func clickAction(sender : UITapGestureRecognizer) {
-        switch gradientView.state {
-        case .gradient:
-            gradientView.dissmisGradient()
-        case .blank:
-            gradientView.applyGradient()
+        if isLinearGradient {
+            linearGradientView.removeFromSuperview()
+            view.addSubview(bubbleGradientView)
+            bubbleGradientView.frame = view.bounds
+        } else {
+            bubbleGradientView.removeFromSuperview()
+            view.addSubview(linearGradientView)
+            linearGradientView.frame = view.bounds
         }
+        print(isLinearGradient)
+        isLinearGradient = !isLinearGradient
     }
 }
