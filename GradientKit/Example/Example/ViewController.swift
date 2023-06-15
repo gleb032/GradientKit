@@ -42,10 +42,7 @@ class ViewController: UIViewController {
         } else {
             bubbleGradientView.removeFromSuperview()
             view.addSubview(linearGradientView)
-            linearGradientView.applyGradient(
-                colors: [.brown, .systemPink],
-                direction: .right
-            )
+            linearGradientView.applyGradient(with: .happy)
             linearGradientView.frame = view.bounds
         }
         isLinearGradient = !isLinearGradient

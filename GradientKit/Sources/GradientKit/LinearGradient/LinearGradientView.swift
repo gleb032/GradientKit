@@ -1,11 +1,8 @@
 import UIKit
 
 open class LinearGradientView: UIView {
-    private var colors: [UIColor] = []
-    private var startPoint: CGPoint? = nil
-    private var endPoint: CGPoint? = nil
-    private var locations: [NSNumber]? = nil
 
+    private var viewModel: LinearGradientViewModel?
     private lazy var gradientLayer = CAGradientLayer()
 
     private(set) public var state: GradientState = .blank {
@@ -39,6 +36,12 @@ open class LinearGradientView: UIView {
     public func dissmisGradient() {
         setAndNotifyState(.blank)
     }
+
+    public func applyGradient(with viewModel: LinearGradientViewModel) {
+        self.viewModel = viewModel
+        setAndNotifyState(.gradient)
+        updateGradient()
+    }
     
     public func applyGradient(
         colors: [UIColor],
@@ -46,13 +49,13 @@ open class LinearGradientView: UIView {
         endPoint: CGPoint,
         locations: [NSNumber]? = nil
     ) {
-        self.colors = colors
-        self.startPoint = startPoint
-        self.endPoint = endPoint
-        self.locations =  locations
-
-        setAndNotifyState(.gradient)
-        updateGradient()
+        let viewModel = LinearGradientViewModel(
+            colors: colors,
+            startPoint: startPoint,
+            endPoint: endPoint,
+            locations: locations
+        )
+        applyGradient(with: viewModel)
     }
 
     public func applyGradient(
@@ -71,12 +74,12 @@ open class LinearGradientView: UIView {
 
 private extension LinearGradientView {
     func updateGradient() {
-        if state == .gradient, let startPoint, let endPoint {
+        if state == .gradient, let viewModel {
             gradientLayer.frame = bounds
-            gradientLayer.colors = colors.map { $0.cgColor }
-            gradientLayer.startPoint = startPoint
-            gradientLayer.endPoint = endPoint
-            gradientLayer.locations = locations
+            gradientLayer.colors = viewModel.colors.map { $0.cgColor }
+            gradientLayer.startPoint = viewModel.startPoint
+            gradientLayer.endPoint = viewModel.endPoint
+            gradientLayer.locations = viewModel.locations
         }
     }
 
