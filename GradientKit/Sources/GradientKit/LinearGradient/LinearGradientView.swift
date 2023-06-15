@@ -1,22 +1,14 @@
-//
-//  LinearGradientView.swift
-//  
-//
-//  Created by Gleb Fandeev on 27.02.2023.
-//
-
 import UIKit
 
-// TODO: reformat API
 open class LinearGradientView: UIView {
-    private let colors: [UIColor]
-    private let startPoint: CGPoint
-    private let endPoint: CGPoint
-    private let locations: [NSNumber]?
+    private var colors: [UIColor] = []
+    private var startPoint: CGPoint? = nil
+    private var endPoint: CGPoint? = nil
+    private var locations: [NSNumber]? = nil
 
     private lazy var gradientLayer = CAGradientLayer()
 
-    private(set) public var state: GradientState {
+    private(set) public var state: GradientState = .blank {
         didSet {
             switch state {
             case .gradient:
@@ -27,41 +19,16 @@ open class LinearGradientView: UIView {
         }
     }
 
-    public init(
-        colors: [UIColor],
-        startPoint: CGPoint,
-        endPoint: CGPoint,
-        locations: [NSNumber]? = nil,
-        initialState: GradientState = .gradient
-    ) {
-        self.colors = colors
-        self.startPoint = startPoint
-        self.endPoint = endPoint
-        self.locations = locations
-        self.state = initialState
+    public init() {
         super.init(frame: .zero)
-
-        setAndNotifyState(initialState)
     }
 
-    public convenience init(
-        colors: [UIColor],
-        direction: LinearGradientDirection,
-        locations: [NSNumber]? = nil,
-        initialState: GradientState = .gradient
-    ) {
-        self.init(
-            colors: colors,
-            startPoint: direction.startPoint,
-            endPoint: direction.endPoint,
-            locations: locations,
-            initialState: initialState
-        )
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
     }
 
     required public init?(coder: NSCoder) {
         preconditionFailure("init(coder:) has not been implemented")
-        return nil
     }
 
     override open func layoutSubviews() {
@@ -73,15 +40,38 @@ open class LinearGradientView: UIView {
         setAndNotifyState(.blank)
     }
     
-    public func applyGradient() {
+    public func applyGradient(
+        colors: [UIColor],
+        startPoint: CGPoint,
+        endPoint: CGPoint,
+        locations: [NSNumber]? = nil
+    ) {
+        self.colors = colors
+        self.startPoint = startPoint
+        self.endPoint = endPoint
+        self.locations =  locations
+
         setAndNotifyState(.gradient)
         updateGradient()
+    }
+
+    public func applyGradient(
+        colors: [UIColor],
+        direction: LinearGradientDirection,
+        locations: [NSNumber]? = nil
+    ) {
+        applyGradient(
+            colors: colors,
+            startPoint: direction.startPoint,
+            endPoint: direction.endPoint,
+            locations: locations
+        )
     }
 }
 
 private extension LinearGradientView {
     func updateGradient() {
-        if state == .gradient {
+        if state == .gradient, let startPoint, let endPoint {
             gradientLayer.frame = bounds
             gradientLayer.colors = colors.map { $0.cgColor }
             gradientLayer.startPoint = startPoint
